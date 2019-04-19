@@ -91,7 +91,7 @@ namespace SM4
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public string keyto16bytes(string key)
+        public string Keyto16bytes(string key)
         {
             string fakekey;
             int length = key.Length;
@@ -123,7 +123,7 @@ namespace SM4
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_SelFile_Click(object sender, RoutedEventArgs e)
+        private void Btn_SelFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog op = new OpenFileDialog();
             op.Title = "选择待加密或解密的文件";
@@ -144,7 +144,7 @@ namespace SM4
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_CBCEncrypt_Click(object sender, RoutedEventArgs e)
+        private void Btn_CBCEncrypt_Click(object sender, RoutedEventArgs e)
         {
             if (textBox.Text == string.Empty)
             {
@@ -159,16 +159,19 @@ namespace SM4
                     SM4Utils sm4 = new SM4Utils();
                     //sm4.secretKey = "JeF8U9wHFOMfs2Y8";
 
-                    sm4.secretKey = keyto16bytes(secretket_form.key);
+                    sm4.secretKey = Keyto16bytes(secretket_form.key);
 
                     sm4.hexString = false;
-                    //tempiv = GetRandomString(16, true, true, true, false, null);
-                    //sm4.iv = tempiv;
-                    sm4.iv = "UISwD9fW6cFh9SNS";
+                    tempiv = GetRandomString(16, true, true, true, false, null).ToLower();
+                    sm4.iv = tempiv;
+                    //sm4.iv = "UISwD9fW6cFh9SNS";
                     byte[] bytedata;
                     bytedata = FiletoByte(textBox.Text);
                     string cipher_data = sm4.Encrypt_CBC(Encoding.Default.GetString(bytedata));
+                    string cipher_data_iv = sm4.iv + cipher_data;
                     byte[] cipher_bytedata = Encoding.Default.GetBytes(cipher_data);
+                    byte[] cipher_bytedata_iv = Encoding.Default.GetBytes(cipher_data_iv);
+                    
                     string extension = System.IO.Path.GetExtension(textBox.Text);
                     SaveFileDialog sfd = new SaveFileDialog();
                     sfd.Title = "保存加密文件";
@@ -176,7 +179,7 @@ namespace SM4
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         FileStream fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write);
-                        fs.Write(cipher_bytedata, 0, cipher_bytedata.Length);
+                        fs.Write(cipher_bytedata_iv, 0, cipher_bytedata_iv.Length);
                         textBox_EnPath.Clear();
                         textBox_EnPath.AppendText(" 加密文件路径：" + sfd.FileName);
                         fs.Close();
@@ -201,7 +204,7 @@ namespace SM4
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_CBCDecrypt_Click(object sender, RoutedEventArgs e)
+        private void Btn_CBCDecrypt_Click(object sender, RoutedEventArgs e)
         {
             if (textBox.Text == string.Empty)
             {
@@ -216,14 +219,18 @@ namespace SM4
                     SM4Utils sm4 = new SM4Utils();
                     //sm4.secretKey = "JeF8U9wHFOMfs2Y8";//密钥
                            
-                    sm4.secretKey = keyto16bytes(secretket_form.key);
+                    sm4.secretKey = Keyto16bytes(secretket_form.key);
 
                     sm4.hexString = false;
                     //sm4.iv = tempiv;
-                    sm4.iv = "UISwD9fW6cFh9SNS";//初始向量
-                    byte[] bytedata;
-                    bytedata = FiletoByte(textBox.Text);
-                    string plain_data = sm4.Decrypt_CBC(Encoding.Default.GetString(bytedata));
+                    //sm4.iv = "UISwD9fW6cFh9SNS";//初始向量
+                    byte[] bytedata = FiletoByte(textBox.Text);                 
+                    byte[] temp_iv = new byte[16];
+                    byte[] file_bytedata = new byte[bytedata.Length - 16];
+                    Array.Copy(bytedata, temp_iv, 16);
+                    sm4.iv = Encoding.Default.GetString(temp_iv);
+                    Array.Copy(bytedata, 16, file_bytedata,0,(bytedata.Length-16));
+                    string plain_data = sm4.Decrypt_CBC(Encoding.Default.GetString(file_bytedata));
                     if (plain_data == string.Empty)
                     {
                         System.Windows.MessageBox.Show("输入的密钥不正确！！", "提示");
@@ -266,7 +273,7 @@ namespace SM4
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_EBCEncrypt_Click(object sender, RoutedEventArgs e)
+        private void Btn_EBCEncrypt_Click(object sender, RoutedEventArgs e)
         {
             if (textBox.Text == string.Empty)
             {
@@ -281,7 +288,7 @@ namespace SM4
                     SM4Utils sm4 = new SM4Utils();
                     //sm4.secretKey = "JeF8U9wHFOMfs2Y8";
 
-                    sm4.secretKey = keyto16bytes(secretket_form.key);
+                    sm4.secretKey = Keyto16bytes(secretket_form.key);
 
                     sm4.hexString = false;
 
@@ -321,7 +328,7 @@ namespace SM4
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_EBCDecrypt_Click(object sender, RoutedEventArgs e)
+        private void Btn_EBCDecrypt_Click(object sender, RoutedEventArgs e)
         {
             if (textBox.Text == string.Empty)
             {
@@ -336,7 +343,7 @@ namespace SM4
                     SM4Utils sm4 = new SM4Utils();
                     //sm4.secretKey = "JeF8U9wHFOMfs2Y8";//密钥
 
-                    sm4.secretKey = keyto16bytes(secretket_form.key);
+                    sm4.secretKey = Keyto16bytes(secretket_form.key);
 
                     sm4.hexString = false;
                     byte[] bytedata;
