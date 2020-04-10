@@ -20,32 +20,30 @@ C#中调用Bouncycastle的SM4加密算法：
 
 代码示例：  
 SM3:  
-  string key_str="wohaicai"
-  byte[] key_tmp=Encoding.Default.GetBytes(key_str);
-  byte[] digest;
-  org.bouncycastle.crypto.Digest md = new org.bouncycastle.crypto.digests.SM3Digest();
-  md.update(key_tmp,0,key_tmp.length);
-  digest = new byte[md.getDigestSize()];
-  md.doFinal(digest, 0);
-SM4:
-  //加密
-  byte[] plaintext = Encoding.ASCII.GetBytes("caiji");
-  byte[] keyBytes = Encoding.ASCII.GetBytes("0123456789ABCDEF");
-  byte[] iv = Encoding.ASCII.GetBytes("0123456789ABCDEF");
-  KeyParameter key = ParameterUtilities.CreateKeyParameter("SM4", keyBytes);
-  ParametersWithIV keyParamWithIv = new ParametersWithIV(key, iv);
-  IBufferedCipher inCipher = CipherUtilities.GetCipher("SM4/CBC/PKCS7Padding");
-  inCipher.Init(true, keyParamWithIv);
-  byte[] cipher = inCipher.DoFinal(plaintext);
+  string key_str="wohaicai"  
+  byte[] key_tmp=Encoding.Default.GetBytes(key_str);  
+  byte[] digest;  
+  org.bouncycastle.crypto.Digest md = new org.bouncycastle.crypto.digests.SM3Digest();  
+  md.update(key_tmp,0,key_tmp.length);  
+  digest = new byte[md.getDigestSize()];  
+  md.doFinal(digest, 0);  
+SM4:  
+  //加密  
+  byte[] plaintext = Encoding.ASCII.GetBytes("caiji");  
+  byte[] keyBytes = Encoding.ASCII.GetBytes("0123456789ABCDEF");  
+  byte[] iv = Encoding.ASCII.GetBytes("0123456789ABCDEF");  
+  KeyParameter key = ParameterUtilities.CreateKeyParameter("SM4", keyBytes);  
+  ParametersWithIV keyParamWithIv = new ParametersWithIV(key, iv);  
+  IBufferedCipher inCipher = CipherUtilities.GetCipher("SM4/CBC/PKCS7Padding");  
+  inCipher.Init(true, keyParamWithIv);  
+  byte[] cipher = inCipher.DoFinal(plaintext);  
   
-  //解密
-  byte[] cipher=...;//比如从文件读取
-  byte[] keyBytes = Encoding.ASCII.GetBytes("0123456789ABCDEF");
-  byte[] iv = Encoding.ASCII.GetBytes("0123456789ABCDEF");
-  KeyParameter key = ParameterUtilities.CreateKeyParameter("SM4", keyBytes);
-  ParametersWithIV keyParamWithIv = new ParametersWithIV(key, iv);
-  IBufferedCipher inCipher = CipherUtilities.GetCipher("SM4/CBC/PKCS7Padding");
-  inCipher.Init(false, keyParamWithIv);
-  byte[] plain = inCipher.DoFinal(cipher);
-
-
+  //解密  
+  byte[] cipher=...;//比如从文件读取  
+  byte[] keyBytes = Encoding.ASCII.GetBytes("0123456789ABCDEF");  
+  byte[] iv = Encoding.ASCII.GetBytes("0123456789ABCDEF");  
+  KeyParameter key = ParameterUtilities.CreateKeyParameter("SM4", keyBytes);  
+  ParametersWithIV keyParamWithIv = new ParametersWithIV(key, iv);  
+  IBufferedCipher inCipher = CipherUtilities.GetCipher("SM4/CBC/PKCS7Padding");  
+  inCipher.Init(false, keyParamWithIv);  
+  byte[] plain = inCipher.DoFinal(cipher);  
