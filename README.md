@@ -19,6 +19,7 @@ C#中调用Bouncycastle的SM4加密算法：
 拿CBC模式来说，需要提供key、iv、明文，对于key，可以使用SM3算法对其进行哈希截取一半的值作为实际运算中的密钥（可再使用伪随机类SecureRandom生成随机数拼接输入的key，增加随机性），iv也可以使用SecureRandom来生成，不过为了能解密加密后的文件，应把iv连同密文一起写入文件。  
 
 代码示例：  
+
 SM3:  
   string key_str="wohaicai"  
   byte[] key_tmp=Encoding.Default.GetBytes(key_str);  
@@ -27,6 +28,7 @@ SM3:
   md.update(key_tmp,0,key_tmp.length);  
   digest = new byte[md.getDigestSize()];  
   md.doFinal(digest, 0);  
+
 SM4:  
   //加密  
   byte[] plaintext = Encoding.ASCII.GetBytes("caiji");  
